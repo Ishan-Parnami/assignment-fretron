@@ -1,0 +1,12 @@
+.axis line,
+.axis path {
+    stroke: #ccc;
+}
+
+.axis text {
+    font-size: 12px;
+}
+
+.circle {
+    opacity: 0.8;
+}
