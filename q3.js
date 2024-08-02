@@ -5,10 +5,10 @@ function turnLeft(direction) {
 function moveInDirection(position, direction) {
     let [x, y] = position;
     switch (direction) {
-        case 0: return [x, y + 1]; // Right
-        case 1: return [x + 1, y]; // Down
-        case 2: return [x, y - 1]; // Left
-        case 3: return [x - 1, y]; // Up
+        case 0: return [x, y + 1]; 
+        case 1: return [x + 1, y]; 
+        case 2: return [x, y - 1]; 
+        case 3: return [x - 1, y]; 
     }
 }
 
