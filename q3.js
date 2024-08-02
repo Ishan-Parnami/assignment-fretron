@@ -1,3 +1,10 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 function turnLeft(direction) {
     return (direction + 1) % 4;
 }
@@ -5,10 +12,10 @@ function turnLeft(direction) {
 function moveInDirection(position, direction) {
     let [x, y] = position;
     switch (direction) {
-        case 0: return [x, y + 1]; 
-        case 1: return [x + 1, y]; 
-        case 2: return [x, y - 1]; 
-        case 3: return [x - 1, y]; 
+        case 0: return [x, y + 1];
+        case 1: return [x + 1, y];
+        case 2: return [x, y - 1];
+        case 3: return [x - 1, y];
     }
 }
 
@@ -43,24 +50,43 @@ function findPaths(start, soldiers, boardSize) {
     return paths;
 }
 
-let boardSize = 10;
-let soldiers = new Set();
-let numSoldiers = prompt("Enter the number of soldiers:");
+async function main() {
+    const boardSize = 10;
+    let soldiers = new Set();
 
-for (let i = 0; i < numSoldiers; i++) {
-    let coords = prompt(`Enter coordinates for soldier ${i + 1}:`).split(',').map(Number);
-    soldiers.add(`${coords[0] - 1},${coords[1] - 1}`);
+    const numSoldiers = await new Promise(resolve => {
+        rl.question('Enter the number of soldiers: ', answer => {
+            resolve(parseInt(answer));
+        });
+    });
+
+    for (let i = 0; i < numSoldiers; i++) {
+        const coords = await new Promise(resolve => {
+            rl.question(`Enter coordinates for soldier ${i + 1} (e.g., "1,1"): `, answer => {
+                resolve(answer.split(',').map(Number));
+            });
+        });
+        soldiers.add(`${coords[0] - 1},${coords[1] - 1}`);
+    }
+
+    const castleCoords = await new Promise(resolve => {
+        rl.question('Enter the coordinates for your "special" castle (e.g., "1,2"): ', answer => {
+            resolve(answer.split(',').map(Number));
+        });
+    });
+    const start = [castleCoords[0] - 1, castleCoords[1] - 1];
+
+    const paths = findPaths(start, soldiers, boardSize);
+
+    console.log(`\nThanks. There are ${paths.length} unique paths for your 'special_castle'\n`);
+
+    paths.forEach((path, i) => {
+        console.log(`Path ${i + 1}: \n=======\nStart (${start[0] + 1},${start[1] + 1})`);
+        path.forEach(step => console.log(step));
+        console.log();
+    });
+
+    rl.close();
 }
 
-let castleCoords = prompt("Enter the coordinates for your 'special' castle:").split(',').map(Number);
-let start = [castleCoords[0] - 1, castleCoords[1] - 1];
-
-let paths = findPaths(start, soldiers, boardSize);
-
-console.log(`\nThanks. There are ${paths.length} unique paths for your 'special_castle'\n`);
-
-paths.forEach((path, i) => {
-    console.log(`Path ${i + 1}: \n=======\nStart (${start[0] + 1},${start[1] + 1})`);
-    path.forEach(step => console.log(step));
-    console.log();
-});
+main();
